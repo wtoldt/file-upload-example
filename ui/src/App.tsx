@@ -1,63 +1,65 @@
-import { useState } from 'react';
-import logo from './assets/images/logo.svg';
+import * as React from 'react';
+import axios, { AxiosError } from 'axios';
+import {UploadOutlined, SyncOutlined  } from '@ant-design/icons';
 
 const App = () => {
-  const [count, setCount] = useState(0);
+  const [file, setFile] = React.useState<File>();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const [error, setError] = React.useState<boolean | string>(false);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSuccess(false);
+    setError(false);
+    if (!event.target.files) return;
+    setFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    setIsLoading(true);
+    setSuccess(false);
+    setError(false);
+    try {
+      const response = await axios.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(response.data);
+      setIsLoading(false);
+      setSuccess(true);
+    } catch (error: unknown) {
+      console.error(error);
+      setIsLoading(false);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data || true);
+      } else {
+        setError(true);
+      }
+    }
+  };
   return (
-    <div className="text-center selection:bg-green-900">
-      <header className="flex min-h-screen flex-col items-center justify-center bg-[#282c34] text-white">
-        <img
-          src={logo}
-          className="animate-speed h-60 motion-safe:animate-spin"
-          alt="logo"
-        />
-        <style>
-          {
-            '\
-            .animate-speed{\
-              animation-duration:20s;\
-            }\
-          '
-          }
-        </style>
-        <p className="bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-5xl font-black text-transparent selection:bg-transparent">
-          Vite + React + Typescript + Tailwindcss
-        </p>
-        <p className="mt-3">
-          <button
-            type="button"
-            className="my-6 rounded bg-gray-300 px-2 py-2 text-[#282C34] transition-all hover:bg-gray-200"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code className="text-[#8d96a7]">App.tsx</code> and save to test
-          HMR updates.
-        </p>
-        <p className="mt-3 flex gap-3 text-center text-[#8d96a7]">
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <main className="flex h-screen w-full flex-col items-center justify-center bg-blue-200">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-min flex-col gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4 items-center"
+      >
+        <input type="file" disabled={isLoading} onChange={handleFileChange} />
+        <button
+          type="submit"
+          disabled={!file || isLoading}
+          className="flex justify-center items-center gap-2 w-min rounded-md bg-blue-600 py-2 px-4 font-bold text-blue-50 enabled:hover:bg-blue-700 enabled:active:bg-blue-700 enabled:active:ring-2 enabled:active:ring-blue-600 enabled:active:ring-offset-1 disabled:opacity-50"
+        >
+          <UploadOutlined />
+          Upload
+        </button>
+      </form>
+      {isLoading && <p><SyncOutlined spin />Loading...</p>}
+      {success && <p>Success!</p>}
+      {error && <p>Error! {typeof error === 'string' ? error : ''}</p>}
+    </main>
   );
 };
 
