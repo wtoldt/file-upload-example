@@ -5,13 +5,13 @@ UI scaffolded using [template-vite-react-ts-tailwind](https://github.com/RoyRao2
 
 ## Objectives
 - Python server
-  - [ ] Single POST endpoint `upload`
-  - [ ] Takes a CSV file
-  - [ ] Parses CSV file into JSON
-  - [ ] If error occures (ie invalid CSV) returns 400
-  - [ ] Responds 200 with JSON payload
+  - [x] Single POST endpoint `upload`
+  - [x] Takes a CSV file
+  - [x] Parses CSV file into JSON
+  - [x] If error occures (ie invalid CSV) returns 400
+  - [x] Responds 200 with JSON payload
 - React UI
-  - Accepts CSv file
+  - Accepts CSV file
     - [ ] Drag and drop CSV file
     - [ ] Input type "file" to accept CSV file
   - Upload button
