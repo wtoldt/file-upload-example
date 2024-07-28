@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify
 import csv
 import io
+import datetime
 
 app = Flask(__name__)
+
+def tprint(message):
+  now = datetime.datetime.now()
+  timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+  print(f"[{timestamp}] {message}")
 
 def csv_to_json(csv_file):
     """Converts a CSV file to a JSON object."""
@@ -16,12 +22,14 @@ def csv_to_json(csv_file):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    tprint("Upload file request received")
     if 'file' not in request.files:
         return 'No file part', 400
     file = request.files['file']
     if file.filename == '':
         return 'No selected file', 400
     if file and file.filename.endswith('.csv'):
+        tprint("File received: " + file.filename)
         try:
             json_data = csv_to_json(file)
             return jsonify({'rows': json_data})
