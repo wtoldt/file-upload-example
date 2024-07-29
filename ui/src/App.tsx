@@ -4,6 +4,7 @@ import {
   UploadOutlined,
   SyncOutlined,
   ArrowDownOutlined,
+  CloseCircleOutlined,
 } from '@ant-design/icons';
 
 const App = () => {
@@ -103,7 +104,14 @@ const App = () => {
         onSubmit={handleSubmit}
         className="flex w-min flex-col items-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4"
       >
-        <input type="file" disabled={isLoading} onChange={handleFileChange} />
+        {file ? (
+          <div className="flex items-center justify-center gap-2 rounded-full bg-blue-600 p-2 leading-none text-blue-50">
+            {file.name}
+            <CloseCircleOutlined onClick={() => setFile(undefined)} />
+          </div>
+        ) : (
+          <input type="file" disabled={isLoading} onChange={handleFileChange} />
+        )}
         <button
           type="submit"
           disabled={!file || isLoading}
@@ -112,7 +120,6 @@ const App = () => {
           <UploadOutlined />
           Upload
         </button>
-        {file && <p>{file.name}</p>}
       </form>
       {isLoading && (
         <p>
