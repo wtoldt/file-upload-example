@@ -5,6 +5,7 @@ import {
   SyncOutlined,
   ArrowDownOutlined,
   CloseCircleOutlined,
+  FileAddOutlined,
 } from '@ant-design/icons';
 
 const App = () => {
@@ -110,7 +111,16 @@ const App = () => {
             <CloseCircleOutlined onClick={() => setFile(undefined)} />
           </div>
         ) : (
-          <input type="file" disabled={isLoading} onChange={handleFileChange} />
+          <label className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-blue-600 px-4 py-2 font-bold text-blue-50">
+            <FileAddOutlined />
+            Select File
+            <input
+              type="file"
+              disabled={isLoading}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
         )}
         <button
           type="submit"

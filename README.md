@@ -23,7 +23,7 @@ UI scaffolded using [template-vite-react-ts-tailwind](https://github.com/RoyRao2
     - [x] If request results in success (200) console.log the response and show success message
 
 ### UI Improvements
-- [ ] Default `<input type="file">` replaced with a button wrapper
+- [x] Default `<input type="file">` replaced with a button wrapper
 - [ ] Break `App.tsx` into components
 - [ ] Success/Error divs become components
   - [ ] Success component shows response from server
