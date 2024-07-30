@@ -15,7 +15,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/upload': 'http://localhost:5000'
-    }
+      '/upload': 'http://localhost:5000',
+    },
   },
 });
