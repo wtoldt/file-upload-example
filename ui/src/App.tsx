@@ -14,6 +14,8 @@ const App = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const [error, setError] = React.useState<boolean | string>(false);
+  const dropZoneRef = React.useRef<HTMLElement>(null);
+  const dragTargetsRef = React.useRef<Node[]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSuccess(false);
@@ -28,21 +30,37 @@ const App = () => {
     event.preventDefault();
   };
   const handleDragEnter = (event: React.DragEvent<HTMLElement>) => {
-    // only enable dragging if the event comes from a drag area
-    if (
-      (event.target as HTMLElement).attributes.getNamedItem('data-drag-role')
-        ?.value === 'drag-area'
-    ) {
-      setIsDragging(true);
-    }
+    console.debug(
+      `drag enter ${(event.target as HTMLElement).attributes.getNamedItem(
+        'data-name',
+      )?.value}`,
+    );
+    // When a child element of the dropzone (or the dropzone itself) emit a dragenter event,
+    //  push the target element into the array to keep track of it
+    dragTargetsRef.current = [...dragTargetsRef.current, event.target as Node];
+    setIsDragging(true);
   };
 
   const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
-    // only disable dragging if the event comes from a drag overlay
-    if (
-      (event.target as HTMLElement).attributes.getNamedItem('data-drag-role')
-        ?.value === 'drag-overlay'
-    ) {
+    console.debug(
+      `drag leave ${(event.target as HTMLElement).attributes.getNamedItem(
+        'data-name',
+      )?.value}`,
+    );
+    // When a child element of the dropzone (or the dropzone itself) emits a dragleave event,
+    //  remove the target element from the array.
+    // This works because when dragging from one element to another, the dragEnter event seems
+    //  to fire before the dragLeave event.
+    //  Ex: dragging into the dropzone and then the overlay appears would look like this:
+    //    enter dropZone, enter dragOverlay, leave dropZone
+    const targets = [...dragTargetsRef.current];
+    const targetIndex = targets.indexOf(event.target as Node);
+    if (targetIndex > -1) {
+      targets.splice(targetIndex, 1);
+    }
+    dragTargetsRef.current = targets;
+    // If the array is empty, the dropzone is not dragging anymore
+    if (targets.length === 0) {
       setIsDragging(false);
     }
   };
@@ -50,6 +68,8 @@ const App = () => {
     // default drop action is to open the file in the browser, let's prevent that
     event.preventDefault();
     setIsDragging(false);
+    // since dragging is done, we can clear the array
+    dragTargetsRef.current = [];
     setFile(event.dataTransfer.files[0]);
   };
 
@@ -81,30 +101,40 @@ const App = () => {
   };
   return (
     <main
-      className="flex h-screen w-full flex-col items-center justify-center bg-blue-200"
+      onSubmit={handleSubmit}
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDragDrop}
-      data-drag-role="drag-area"
+      ref={dropZoneRef}
+      data-name="dropZone"
+      className="flex h-screen w-full flex-col items-center justify-center bg-blue-200"
     >
       {isDragging && (
         <div
           className="fixed inset-0 z-10 flex h-screen w-full items-center justify-center p-8"
-          data-drag-role="drag-overlay"
+          data-name="dragOverlay"
         >
-          <div className="flex h-full w-full items-center justify-center rounded-lg border-8 border-dashed border-blue-300 bg-white/30 backdrop-blur-md">
-            <div className="flex items-center justify-center gap-2 text-blue-600 ">
-              <ArrowDownOutlined className="animate-bounce rounded-full border-4 border-blue-600 bg-white/50 p-1 text-2xl" />
-              <h1 className="text-3xl font-bold">Drop file here</h1>
+          <div
+            className="flex h-full w-full items-center justify-center rounded-lg border-8 border-dashed border-blue-300 bg-white/30 backdrop-blur-md"
+            data-name="dragOverlayContentContainer"
+          >
+            <div
+              className="flex items-center justify-center gap-2 text-blue-600"
+              data-name="dragOverlayContent"
+            >
+              <ArrowDownOutlined
+                className="animate-bounce rounded-full border-4 border-blue-600 bg-white/50 p-1 text-2xl"
+                data-name="dragOverlayIcon"
+              />
+              <h1 className="text-3xl font-bold" data-name="dragOverlayText">
+                Drop file here
+              </h1>
             </div>
           </div>
         </div>
       )}
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-min flex-col items-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4"
-      >
+      <form className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4">
         {file ? (
           <div className="flex items-center justify-center gap-2 rounded-full bg-blue-600 p-2 leading-none text-blue-50">
             {file.name}
