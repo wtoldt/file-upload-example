@@ -1,13 +1,8 @@
 import * as React from 'react';
 import axios, { AxiosError } from 'axios';
-import {
-  UploadOutlined,
-  SyncOutlined,
-  CloseCircleOutlined,
-  FileAddOutlined,
-} from '@ant-design/icons';
+import { UploadOutlined, SyncOutlined } from '@ant-design/icons';
 
-import DragOverlay from '@/components/DragOverlay';
+import { DragOverlay, FileInput } from '@/components';
 
 const App = () => {
   const [file, setFile] = React.useState<File>();
@@ -111,27 +106,14 @@ const App = () => {
       data-name="dropZone"
       className="flex h-screen w-full flex-col items-center justify-center bg-blue-200"
     >
-      {isDragging && (
-        <DragOverlay />
-      )}
+      {isDragging && <DragOverlay />}
       <form className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4">
-        {file ? (
-          <div className="flex items-center justify-center gap-2 rounded-full bg-blue-600 p-2 leading-none text-blue-50">
-            {file.name}
-            <CloseCircleOutlined onClick={() => setFile(undefined)} />
-          </div>
-        ) : (
-          <label className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-blue-600 px-4 py-2 font-bold text-blue-50">
-            <FileAddOutlined />
-            Select File
-            <input
-              type="file"
-              disabled={isLoading}
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
-        )}
+        <FileInput
+          file={file}
+          removeFile={() => setFile(undefined)}
+          handleFileChange={handleFileChange}
+          isLoading={isLoading}
+        />
         <button
           type="submit"
           disabled={!file || isLoading}

@@ -1,5 +1,5 @@
 import { ArrowDownOutlined } from '@ant-design/icons';
-const DragOverlay = () => {
+export const DragOverlay = () => {
   return (
     <div
       className="fixed inset-0 z-10 flex h-screen w-full items-center justify-center p-8"
@@ -25,5 +25,3 @@ const DragOverlay = () => {
     </div>
   );
 };
-
-export default DragOverlay;
