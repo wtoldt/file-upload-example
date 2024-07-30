@@ -1,8 +1,14 @@
 import * as React from 'react';
 import axios, { AxiosError } from 'axios';
-import { UploadOutlined, SyncOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 
-import { DragOverlay, FileInput } from '@/components';
+import {
+  DragOverlay,
+  FileInput,
+  LoadingSpinner,
+  SuccessMessage,
+  ErrorMessage,
+} from '@/components';
 
 const App = () => {
   const [file, setFile] = React.useState<File>();
@@ -107,7 +113,7 @@ const App = () => {
       className="flex h-screen w-full flex-col items-center justify-center bg-blue-200"
     >
       {isDragging && <DragOverlay />}
-      <form className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4">
+      <form className="relative mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-4 border-dashed border-blue-300 p-4">
         <FileInput
           file={file}
           removeFile={() => setFile(undefined)}
@@ -123,14 +129,9 @@ const App = () => {
           Upload
         </button>
       </form>
-      {isLoading && (
-        <p>
-          <SyncOutlined spin />
-          Loading...
-        </p>
-      )}
-      {success && <p>Success!</p>}
-      {error && <p>Error! {typeof error === 'string' ? error : ''}</p>}
+      {isLoading && <LoadingSpinner />}
+      {success && <SuccessMessage />}
+      {error && <ErrorMessage error={error} />}
     </main>
   );
 };
