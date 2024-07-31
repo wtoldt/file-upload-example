@@ -14,7 +14,7 @@ import {
 const App = () => {
   const [file, setFile] = React.useState<File>();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
+  const [success, setSuccess] = React.useState<boolean | string>(false);
   const [error, setError] = React.useState<boolean | string>(false);
   const { getDropZoneProps, isDragging } = useDragAndDrop({ setFile });
 
@@ -38,9 +38,8 @@ const App = () => {
       const response = await axios.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log(response.data);
       setIsLoading(false);
-      setSuccess(true);
+      setSuccess(response.data);
     } catch (error: unknown) {
       console.error(error);
       setIsLoading(false);
@@ -75,7 +74,7 @@ const App = () => {
         </button>
       </form>
       {isLoading && <LoadingSpinner />}
-      {success && <SuccessMessage />}
+      {success && <SuccessMessage payload={success} />}
       {error && <ErrorMessage error={error} />}
     </main>
   );

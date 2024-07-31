@@ -24,9 +24,9 @@ UI scaffolded using [template-vite-react-ts-tailwind](https://github.com/RoyRao2
 
 ### UI Improvements
 - [x] Default `<input type="file">` replaced with a button wrapper
-- [ ] Break `App.tsx` into components
-- [ ] Success/Error divs become components
-  - [ ] Success component shows response from server
+- [x] Break `App.tsx` into components
+- [x] Success/Error divs become components
+  - [x] Success component shows response from server
 - [ ] Don't allow user to select/drop files which are not CSV
 - [ ] Use `fetch` instead of `axios` - no real reason to use `axios` over `fetch`
 - [ ] Improve active/focus styles, make consistent across components
