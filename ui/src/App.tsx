@@ -67,7 +67,7 @@ const App = () => {
         <button
           type="submit"
           disabled={!file || isLoading}
-          className="flex w-min items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-bold text-blue-50 enabled:hover:bg-blue-700 enabled:active:bg-blue-700 enabled:active:ring-2 enabled:active:ring-blue-600 enabled:active:ring-offset-1 disabled:opacity-50"
+          className="flex w-min items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-bold text-blue-50 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-blue-200 active:bg-blue-700 disabled:opacity-50"
         >
           <UploadOutlined />
           Upload

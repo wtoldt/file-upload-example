@@ -29,4 +29,4 @@ UI scaffolded using [template-vite-react-ts-tailwind](https://github.com/RoyRao2
   - [x] Success component shows response from server
 - [ ] Don't allow user to select/drop files which are not CSV
 - [ ] Use `fetch` instead of `axios` - no real reason to use `axios` over `fetch`
-- [ ] Improve active/focus styles, make consistent across components
+- [x] Improve active/focus styles, make consistent across components
